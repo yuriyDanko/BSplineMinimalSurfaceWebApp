@@ -1,0 +1,10 @@
+{
+  "Degree" : 3,
+  "RealPartXOfControlPoints" : [1, 3, 8, 0],
+  "RealPartYOfControlPoints" : [3, -3, -2, 0],
+  "RealPartZOfControlPoints" : [1, 1, 4, 0],
+  "ImaginePartZOfControlPoints" : [1, 1, 5, 0],
+  "ImaginePartOfFirstX" : 1,
+  "ImaginePartOfFirstY" : -8,
+  "NodalVector" : [0, 0.8, 1.6, 2.4, 3.2, 4, 4.8, 5.6]
+}

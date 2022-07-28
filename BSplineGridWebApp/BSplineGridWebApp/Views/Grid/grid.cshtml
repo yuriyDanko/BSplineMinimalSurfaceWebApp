@@ -1,0 +1,150 @@
+@using BSplineGridWebApp.Models.BusinessLogic.Point
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+    <script src='https://cdn.plot.ly/plotly-latest.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    
+    <style>
+    input[type="file"] {
+    display: none;
+}
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+    </style>
+</head>
+<body>
+<div>
+    @{
+        
+        var error= ViewData["error"] as string;
+    
+        var realPartX = (double[])ViewData["realPartX"];
+        var realPartY = (double[]) ViewData["realPartY"];
+        var realPartZ = (double[]) ViewData["realPartZ"];
+        var informationAboutGrid = ViewData["informationAboutGrid"] as List<string>;
+        var realPartXOfControlPoints = ViewData["realPartXOfControlPoints"] as List<double>;
+        var realPartYOfControlPoints = ViewData["realPartYOfControlPoints"] as List<double>;
+        var realPartZOfControlPoints = ViewData["realPartZOfControlPoints"] as List<double>;
+
+        var realPartXOfControlPointsString = ViewData["realPartXOfControlPointsString"] as string;
+        var realPartYOfControlPointsString = ViewData["realPartYOfControlPointsString"] as string;
+        var realPartZOfControlPointsString = ViewData["realPartZOfControlPointsString"] as string;
+
+        var imaginePartsOfControlPointsString = ViewData["imaginePartsOfControlPointsString"] as string;
+
+        var degree = ViewData["degree"] as string;
+        var nodalVectorString = ViewData["nodalVector"] as string;
+        var imaginePartOfFirstX = ViewData["imaginePartOfFirstX"] as string;
+        var imaginePartOfFirstY = ViewData["imaginePartOfFirstY"] as string;
+
+    }
+    
+    @if (@error != string.Empty)
+    {
+        <script>alert(@Html.Raw(Json.Serialize(@error)));</script>
+    }
+  
+
+    @model BSplineGridWebApp.ViewModels.FileViewModel
+    <form asp-controller="Grid" asp-action="Grid" method="post"  
+          enctype="multipart/form-data">
+        <label asp-for = "File" for="file-upload" class="custom-file-upload">
+            <i class="fa fa-cloud-upload"></i> Select File
+        </label>
+        <input asp-for = "File" id="file-upload" type="file" name = "file"/>
+        <button class="custom-file-upload" type="submit">Upload File</button>
+       
+        <span class="field-validation-valid text-danger" 
+                data-valmsg-for="File" 
+                data-valmsg-replace="true">
+        </span>
+    </form> 
+    
+   
+    
+    <br/>
+    <div>Degree of b-spline: @degree</div>
+    <div>Nodal vector: @nodalVectorString</div>
+    <div>Real part of x of control points: @realPartXOfControlPointsString</div>
+    <div>Real part of y of control points: @realPartYOfControlPointsString</div>
+    <div>Real part of z of control points: @realPartZOfControlPointsString</div>
+    <div>Imagine part of first x of control point: @imaginePartOfFirstX</div> 
+    <div>Imagine part of first y of control point: @imaginePartOfFirstY</div>
+    <div>Imagine parts of control points: @imaginePartsOfControlPointsString</div>
+
+    <div id='myDiv' style="height:600px; width:100%;"></div>
+    
+    <h2 style="text-align: center; font-family: Verdana,serif; font-size: 12px;">Orthogonal and isothermal characteristics</h2>
+    <textarea style="width: 100%; height: 150px; text-align: center">
+    @if (@informationAboutGrid != null)
+    {
+        @foreach(var inf in @informationAboutGrid)
+        {
+            @inf;
+            <br>
+        }
+    }
+    </textarea>
+    
+    
+</div>
+<script>
+
+var trace1 = {
+  x: @Html.Raw(Json.Serialize(@realPartX)),
+  y: @Html.Raw(Json.Serialize(@realPartY)),
+  z: @Html.Raw(Json.Serialize(@realPartZ)),
+  name: 'Grid',
+  mode: 'markers',
+  type: 'scatter3d',
+  marker: {
+          color: 'black',
+          size: 1
+        }
+};
+
+var trace2 = {
+    x: @Html.Raw(Json.Serialize(@realPartXOfControlPoints)),
+    y: @Html.Raw(Json.Serialize(@realPartYOfControlPoints)),
+    z: @Html.Raw(Json.Serialize(@realPartZOfControlPoints)),
+
+    name : 'characteristic polygon',
+    mode: 'markers',
+    type: 'scatter3d'
+   };
+
+
+var layout = {
+   scene:{
+	xaxis: {
+	 backgroundcolor: "black",
+	 showbackground: false,
+	}, 
+    yaxis: {
+     backgroundcolor: "black",
+     showbackground: false,
+    },
+     zaxis: {
+         backgroundcolor: "black",
+         showbackground: false,
+        }
+}
+};
+
+var data = [trace1];
+
+Plotly.newPlot('myDiv', data, layout);
+</script>
+</body>
+</html>
